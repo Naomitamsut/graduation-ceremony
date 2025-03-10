@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graduation Ceremony</title>
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #22628e;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+        }
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        .sidebar a.active {
+            background-color: #b95e25;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="#" onclick="showSection('invitation')">Invitation</a>
+        <a href="#" onclick="showSection('rsvp')">RSVP</a>
+        <a href="#" onclick="showSection('directions')">Directions</a>
+        <input type="password" id="adminPass" placeholder="Admin Password" style="width: 100%; margin-top: 10px;">
+        <button onclick="checkAdmin()" style="width: 100%;">Login</button>
+    </div>
+    <div class="content">
+        <div id="invitation">
+            <img src="invitation.jpeg" alt="Graduation Invitation" style="width: 100%; height: auto;">
+        </div>
+        <div id="rsvp" class="hidden">
+            <h1>Graduation RSVP</h1>
+            <form id="rsvpForm">
+                <label>Student's Name: <input type="text" id="studentName"></label><br>
+                <label>Number of Guests: <input type="number" id="guestNumber"></label><br>
+                <label>Dietary Needs: <input type="text" id="dietary"></label><br>
+                <label>Accessibility Needs: <input type="text" id="accessibility"></label><br>
+                <button type="button" onclick="submitRSVP()" style="background: #22628e; color: white;">Submit</button>
+            </form>
+        </div>
+        <div id="directions" class="hidden">
+            <h1>Directions</h1>
+            <a href="https://moovitapp.com" target="_blank">Moovit Directions</a><br>
+            <a href="https://waze.com" target="_blank">Waze Directions</a>
+        </div>
+        <div id="admin" class="hidden">
+            <h1>RSVP Responses</h1>
+            <table id="responsesTable" border="1">
+                <tr><th>Student Name</th><th>Guests</th><th>Dietary</th><th>Accessibility</th></tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        function showSection(section) {
+            document.querySelectorAll('.content > div').forEach(div => div.classList.add('hidden'));
+            document.getElementById(section).classList.remove('hidden');
+            document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        function checkAdmin() {
+            if (document.getElementById('adminPass').value === '12345') {
+                showSection('admin');
+            } else {
+                alert('Incorrect Password');
+            }
+        }
+        
+        function submitRSVP() {
+            const studentName = document.getElementById('studentName').value;
+            const guestNumber = document.getElementById('guestNumber').value;
+            const dietary = document.getElementById('dietary').value;
+            const accessibility = document.getElementById('accessibility').value;
+            
+            fetch('https://script.google.com/macros/s/AKfycbzoUuQbtoLZ8GeZk6UlMJYzAPn4BwdAcNvrAOHwI-Iyr_M-mbtZnhR5wiUSNz9Xra-M/exec', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ studentName, guestNumber, dietary, accessibility })
+            })
+            .then(response => response.json())
+            .then(data => alert('RSVP submitted successfully'))
+            .catch(error => alert('Error submitting RSVP'));
+        }
+    </script>
+</body>
+</html>
